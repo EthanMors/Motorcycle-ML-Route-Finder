@@ -253,6 +253,7 @@ The learner should demo a working artifact at the end of every phase.
    only two coordinate points in its geometry?"
 3. One thing to read before next session (with URL)
 4. Preview: "Next time we're going to [specific next step]."
+5. Update PROGRESS.md in the repo: check off completed items and add a session log entry.
 
 ---
 
