@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(Get-ChildItem \"C:\\\\Users\\\\ethan\\\\Downloads\\\\Learning PyTorch\\\\Motorcycle-ML-Route-Finder\" -Exclude env)",
+      "Bash(Select-Object Name)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ethan\\\\Downloads\\\\Learning PyTorch\\\\Motorcycle-ML-Route-Finder\" | Where-Object { $_.Name -ne 'env' } | Select-Object Name, LastWriteTime)",
+      "Bash(python -c \"import json; nb=json.load\\(open\\('phase1_exploration.ipynb'\\)\\); cells=nb['cells']; [print\\(c['source']\\) for c in cells[-3:]]\")",
+      "Bash(python -c \"import json; nb=json.load\\(open\\('phase1_exploration.ipynb'\\)\\); cells=nb['cells']; [print\\(f'CELL {i}:\\\\n{c[\\\\\"source\\\\\"]}\\\\nOUTPUT:{[o.get\\(\\\\\"text\\\\\",o.get\\(\\\\\"traceback\\\\\",\\\\\"\\\\\"\\)\\) for o in c[\\\\\"outputs\\\\\"]]}\\\\n---'\\) for i,c in enumerate\\(cells[-5:]\\)]\")"
     ]
   }
 }
