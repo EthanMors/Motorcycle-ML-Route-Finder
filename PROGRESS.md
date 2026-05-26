@@ -78,14 +78,19 @@
 
 ## Phase 3 — Rule-Based Scorer
 
-### Step 3a: Scoring formula
-- [ ] Can justify every weight in the formula with a real-world motorcycle argument
-- [ ] Scoring map passes the "ride it" test — high scores are actually good roads
+### Step 3a: Scoring formula ✓ COMPLETE
+- [x] Can justify every weight in the formula with a real-world motorcycle argument
+- [x] Normalized curvature (log1p + min-max), maxspeed (power transform), grade_abs (clipped + min-max), highway_penalty (manual weights by type)
+- [x] Fixed compute_curvature bug: diffBearing clipped to π to prevent negative accumulation and log1p NaNs
+- [x] Learned: never use built-in names (min, max) as variable names — silently shadows the built-in
 
-### Step 3b: Round trip router
-- [ ] Can trace through Dijkstra on a 4-node graph on paper
-- [ ] Can explain why fun is maximized by minimizing (1 - fun_score)
-- [ ] Route renders correctly on a folium map
+### Step 3b: Round trip router ✓ COMPLETE
+- [x] Can explain why fun is maximized by minimizing (1 - fun_score) * length
+- [x] Used single_source_dijkstra with weight='length' to find real-distance turnaround candidates
+- [x] Used single_source_dijkstra with weight=fun_score to pick best turnaround node
+- [x] Combined outbound path + return path (with [1:] to avoid duplicate turnaround node)
+- [x] Route renders correctly as HTML map via Folium PolyLine
+- [x] Understands why return path must be computed separately (directed graph, one-way streets)
 
 ### Step 3c: CLI / UI
 - [ ] Program accepts --start and --miles arguments
@@ -157,4 +162,5 @@
 | 2026-05-17 | Phase 1 / Step 1b | Downloaded Snohomish city graph (416 nodes, 1057 edges), plotted, inspected nodes and edges | None — step complete |
 | 2026-05-19 | Phase 2 / Step 2a | Built compute_curvature() from scratch using atan2 bearings; applied to all 1057 edges | Curvature needs length normalization in Phase 3 |
 | 2026-05-20 | Phase 2 / Steps 2b–2c | Added elevation/grade via Open Topo Data; imputed maxspeed by highway type | None — steps complete |
+| 2026-05-25 | Phase 3 / Steps 3a–3b | Normalized all features; built fun_score(); fixed curvature bug (diffBearing clipped to π); built round trip router with two-pass Dijkstra; rendered route as HTML map in Folium | Snohomish graph is tiny (~5.4km max) — expand to county for better roads; Step 3c CLI still to do |
 | 2026-05-20 | Phase 2 / Step 2d | Built clean (1057, 11) feature matrix: 5 numeric + 6 highway dummies, zero nulls | None — Phase 2 complete |
