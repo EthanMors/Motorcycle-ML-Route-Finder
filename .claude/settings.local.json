@@ -8,7 +8,8 @@
       "Bash(python -c \"import json; nb=json.load\\(open\\('phase1_exploration.ipynb'\\)\\); cells=nb['cells']; [print\\(c['source']\\) for c in cells[-3:]]\")",
       "Bash(python -c \"import json; nb=json.load\\(open\\('phase1_exploration.ipynb'\\)\\); cells=nb['cells']; [print\\(f'CELL {i}:\\\\n{c[\\\\\"source\\\\\"]}\\\\nOUTPUT:{[o.get\\(\\\\\"text\\\\\",o.get\\(\\\\\"traceback\\\\\",\\\\\"\\\\\"\\)\\) for o in c[\\\\\"outputs\\\\\"]]}\\\\n---'\\) for i,c in enumerate\\(cells[-5:]\\)]\")",
       "Bash(python -c \"import json; nb=json.load\\(open\\('phase1_exploration.ipynb'\\)\\); cells=nb['cells']; [print\\(f'CELL {i} [{c[\\\\\"id\\\\\"]}]:\\\\n{\\\\\"|\\\\\".join\\(c[\\\\\"source\\\\\"]\\)}\\\\nOUTPUT: {[o.get\\(\\\\\"text\\\\\",o.get\\(\\\\\"traceback\\\\\",o.get\\(\\\\\"data\\\\\",\\\\\"\\\\\"\\)\\)\\) for o in c[\\\\\"outputs\\\\\"]]}\\\\n---'\\) for i,c in enumerate\\(cells\\)]\")",
-      "Bash(python *)"
+      "Bash(python *)",
+      "Bash(Get-ChildItem \"C:\\\\Users\\\\ethan\\\\Downloads\\\\Learning PyTorch\\\\Motorcycle-ML-Route-Finder\" -Exclude \"env\")"
     ]
   }
 }

@@ -207,20 +207,39 @@ def find_route(G, start_node, miles):
     
     distance_fun, path_fun = nx.single_source_dijkstra(G, nearest_node, weight= fun_score) 
     
-    top_3_dest = sorted(filter_distance_dict, key= distance_fun.get)[:3]
+    top_20_dest = sorted(filter_distance_dict, key= distance_fun.get)[:20]
     
-    top_3_round_trip = []
+
     
-    for dest in top_3_dest:
+    accepted_destinations = []
+    for dest in top_20_dest:
         outbound_path = path_fun[dest]
         
         return_path = nx.shortest_path(G, dest, nearest_node, weight=fun_score)
         
         full_round_trip = outbound_path + return_path[1:]  
         
-        top_3_round_trip.append(full_round_trip)
-    
-    return top_3_round_trip
+        
+        if len(accepted_destinations) >= 3:
+            break
+        
+        elif not accepted_destinations:
+            accepted_destinations.append(full_round_trip)
+        
+        elif full_round_trip not in accepted_destinations:
+            
+            trip = set(full_round_trip)
+            
+            for accepted in accepted_destinations:
+                accepted = set(accepted)
+                overlap = trip.intersection(accepted)
+                if max(len(overlap) / len(trip), len(overlap) / len(accepted)) > max(1 - (miles/100), 0.25):
+                    print(max(len(overlap) / len(trip), len(overlap) / len(accepted)))
+                    break
+            else:
+                accepted_destinations.append(full_round_trip)
+    print(len(accepted_destinations))
+    return accepted_destinations
 
 def plot_route(top_3_routes, G):
     start_node = top_3_routes[0][0]
