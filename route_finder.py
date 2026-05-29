@@ -1,5 +1,6 @@
 import argparse
 import math
+from turtle import distance
 import osmnx as ox
 from pathlib import Path
 import folium
@@ -178,13 +179,86 @@ def normalize_gdf(G):
     G = ox.graph_from_gdfs(gdf_nodes, gdf_edges)
     return  G
 
-def find_route(graph, start_node, miles):
+def find_route(G, start_node, miles):
     # Implement Dijkstra's algorithm or A* search to find the optimal route
-    pass
+    lat, lon = ox.geocode(start_node)
+    nearest_node = ox.nearest_nodes(G, lon, lat)
+    meter = miles * 1609.34
 
-def plot_route(route, gdf):
-    # Use Folium to plot the route on a map
-    pass
+    distance, path = nx.single_source_dijkstra(G, nearest_node, cutoff=meter, weight="length")
+    filter_distance_dict = {k: v for k, v in distance.items() if v >= (meter * 0.75) and v < meter}
+
+    def fun_score(u, v, d):
+    # Handle MultiDiGraph structure (dictionary of dictionaries)
+        if 0 in d:
+            d = d[0]
+
+        # Use .get(key, default) to safely handle missing data
+        maxspeed = d.get('maxspeed', d.get('maxspeed', 0))
+        grade = d.get('grade_abs_norm', d.get('grade_abs', 0))
+        curvature = d.get('curvature', 0)
+        penalty = d.get('highway_effectiveness', 1.0)
+
+        score = (maxspeed * 0.1) + (grade * 0.1) + (curvature * 0.6) + (penalty * 0.2)
+
+        
+
+        return (1 - score) * d['length']
+    
+    distance_fun, path_fun = nx.single_source_dijkstra(G, nearest_node, weight= fun_score) 
+    
+    top_3_dest = sorted(filter_distance_dict, key= distance_fun.get)[:3]
+    
+    top_3_round_trip = []
+    
+    for dest in top_3_dest:
+        outbound_path = path_fun[dest]
+        
+        return_path = nx.shortest_path(G, dest, nearest_node, weight=fun_score)
+        
+        full_round_trip = outbound_path + return_path[1:]  
+        
+        top_3_round_trip.append(full_round_trip)
+    
+    return top_3_round_trip
+
+def plot_route(top_3_routes, G):
+    start_node = top_3_routes[0][0]
+    start_lat = G.nodes[start_node]['y']
+    start_lon = G.nodes[start_node]['x']
+    m = folium.Map(location=[start_lat, start_lon], zoom_start=12, tiles='Cartodb positron')
+
+    route_colors = ['red', 'blue', 'green']
+
+    for route_idx, trip in enumerate(top_3_routes):
+        route_coords = []
+
+        for u,v in zip(trip[:-1], trip[1:]):
+            
+            edge_data = G.get_edge_data(u, v)[0]
+            u_lat, u_lon = G.nodes[u]['y'], G.nodes[u]['x']
+            v_lat, v_lon = G.nodes[v]['y'], G.nodes[v]['x']
+
+            if 'geometry' in edge_data:
+                
+                curve_points = [(lat, lon) for lon, lat in edge_data['geometry'].coords]
+
+                if round(curve_points[0][0], 4) != round(u_lat,4):
+                    curve_points.reverse()
+                route_coords.extend(curve_points)
+            else:
+                route_coords.append((u_lat, u_lon))
+                route_coords.append((v_lat, v_lon))
+    
+        folium.PolyLine(
+            locations=route_coords,
+            color=route_colors[route_idx],
+            weight=5,
+            opacity=0.8,
+            tooltip=f"Route {route_idx + 1}"
+        ).add_to(m)
+
+    m.save('top_3_routes_map.html')
 
 def main():
     
@@ -199,9 +273,9 @@ def main():
 
     G = normalize_gdf(loaded_graph)  
 
-    optimal_route = find_route(G, args.start.lower(), args.miles)
+    top_3_routes = find_route(G, args.start.lower(), args.miles)
 
-    plot_route(optimal_route, G) 
+    plot_route(top_3_routes, G) 
 
 if __name__ == "__main__":
     main()
