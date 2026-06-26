@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 def load_graph():
    
-    file_name = Path("Snohomish_County_Graph.graphml")
+    file_name = Path("Snohomish_King_County_Graph.graphml")
     
 
 
@@ -23,11 +23,12 @@ def load_graph():
        G = ox.load_graphml(file_name)
     
     else:
-       print(f"Graph file {file_name} not found. Downloading graph from OpenStreetMap...")
+       places = ["Snohomish County, Washington, USA", "King County, Washington, USA"]
+       print(f"Graph file {file_name} not found. Downloading graph from OpenStreetMap for {', '.join(places)}...")
        
        ox.settings.elevation_url_template = ("https://api.opentopodata.org/v1/aster30m?locations={locations}")
        
-       G = ox.graph_from_place("Snohomish, Washington, USA", network_type="drive")
+       G = ox.graph_from_place(places, network_type="drive")
        
        G = ox.elevation.add_node_elevations_google(G, batch_size=100, pause=1)
        G = ox.elevation.add_edge_grades(G)

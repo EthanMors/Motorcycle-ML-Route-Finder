@@ -92,31 +92,33 @@
 - [x] Route renders correctly as HTML map via Folium PolyLine
 - [x] Understands why return path must be computed separately (directed graph, one-way streets)
 
-### Step 3c: CLI / UI
-- [ ] Program accepts --start and --miles arguments
-- [ ] Outputs a usable HTML map
-- [ ] Handles the case where start point is not on a road
+### Step 3c: CLI / UI ✓ COMPLETE
+- [x] Program accepts start and miles positional arguments via argparse
+- [x] Outputs a usable HTML map (top_3_routes_map.html)
+- [x] Handles the case where start point is not on a road via ox.nearest_nodes
 
 ---
 
 ## Phase 4 — Graph Neural Network
 
-### Step 4a: PyTorch fundamentals
-- [ ] Can explain what a tensor is and how it differs from a NumPy array
-- [ ] Can explain what autograd does in plain English
-- [ ] Can explain what loss.backward() computes, specifically
-- [ ] Can explain what optimizer.step() changes, specifically
-- [ ] Can write a training loop from memory
+### Step 4a: PyTorch fundamentals ✓ COMPLETE
+- [x] Can explain what a tensor is and how it differs from a NumPy array
+- [x] Can explain what autograd does in plain English
+- [x] Can explain what loss.backward() computes, specifically
+- [x] Can explain what optimizer.step() changes, specifically
+- [x] Can write a training loop from memory
 
-### Step 4b: GNN concepts
-- [ ] Can explain message passing without using the word "neural"
-- [ ] Can write the GCN matrix equation from memory
-- [ ] Can explain why road scores depend on neighboring roads (concrete example)
-- [ ] Can explain what edge_index is and why it's shape (2, E)
+### Step 4b: GNN concepts ✓ COMPLETE
+- [x] Can explain message passing without using the word "neural"
+- [x] Can write the GCN matrix equation from memory
+- [x] Can explain why road scores depend on neighboring roads (concrete example)
+- [x] Can explain what edge_index is and why it's shape (2, E)
 
-### Step 4c: Convert to PyG format
-- [ ] Drew a 4-node graph and wrote its edge_index by hand before touching code
-- [ ] Can verify data.edge_attr shape matches expected (E, F)
+### Step 4c: Convert to PyG format ✓ COMPLETE
+- [x] Drew a 4-node graph and wrote its edge_index by hand before touching code
+- [x] Can verify data.edge_attr shape matches expected (E, F)
+- [x] Built valid PyG Data object: num_nodes=30917, edge_index=(2,71455), edge_attr=(71455,17), y=(71455,1)
+- [x] Remapped OSM node IDs to 0-based indices using enumerate + apply_()
 
 ### Step 4d: Train the GNN
 - [ ] Can explain what the GNN is learning from (which labels, why they're imperfect)
@@ -164,3 +166,5 @@
 | 2026-05-20 | Phase 2 / Steps 2b–2c | Added elevation/grade via Open Topo Data; imputed maxspeed by highway type | None — steps complete |
 | 2026-05-25 | Phase 3 / Steps 3a–3b | Normalized all features; built fun_score(); fixed curvature bug (diffBearing clipped to π); built round trip router with two-pass Dijkstra; rendered route as HTML map in Folium | Snohomish graph is tiny (~5.4km max) — expand to county for better roads; Step 3c CLI still to do |
 | 2026-05-20 | Phase 2 / Step 2d | Built clean (1057, 11) feature matrix: 5 numeric + 6 highway dummies, zero nulls | None — Phase 2 complete |
+| 2026-06-02 | Phase 3 / Step 3c | CLI complete: argparse with positional start/miles args, top_3_routes_map.html output, nearest node handling | Phase 3 complete — beginning Phase 4 |
+| 2026-06-03 | Phase 4 / Step 4a | PyTorch fundamentals: tensors, autograd, optimizer, training loop; ran toy linear regression loop with decreasing loss | Phase 4b next — GNN concepts and message passing |
